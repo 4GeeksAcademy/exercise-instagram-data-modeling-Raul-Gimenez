@@ -16,7 +16,7 @@ class User(Base):
     password = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     posts = relationship("Post", backref = "user", lazy=True)
-    comments = relationship("Comment", backref = "author", lazy=True)
+    comments = relationship("Comments", backref = "author", lazy=True)
     followers = relationship("Follower")
 
 class Post(Base):
@@ -25,6 +25,10 @@ class Post(Base):
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
+    media = relationship("Media", backref = "post", lazy=True)
+    comments = relationship("Comments", backref ="post", lazy=True)
+    #user = relationship with backref in table user
+
 
 class Media(Base):
     __tablename__ = 'media'
@@ -33,15 +37,18 @@ class Media(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String(250), nullable=False)
     post_id = Column(Integer, ForeignKey('post.id'))
+    #post = relationship with backref in table post
     
-class Comment(Base):
-    __tablename__ = 'comment'
+class Comments(Base):
+    __tablename__ = 'comments'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     text = Column(String(250), nullable=False)
     post_id = Column(Integer, ForeignKey('post.id'))
     author_id = Column(Integer, ForeignKey("user.id")) #Es el id del que escribe el comentario no del creador del post.
+    #post = relationship with backref in table post
+    #author = relationship with backref in table user
     
 class Follower(Base) :
     __tablename__ = 'follower'
